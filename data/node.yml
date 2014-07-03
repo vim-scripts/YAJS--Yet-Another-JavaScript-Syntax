@@ -1,0 +1,11 @@
+javascriptNodeGlobal:
+    - global
+    - process
+    - console
+    - Buffer
+    - module
+    - expports
+    - setTimeout
+    - clearTimeout
+    - setInterval
+    - clearInterval

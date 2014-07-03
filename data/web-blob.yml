@@ -1,0 +1,14 @@
+javascriptBOMFileMethod:
+    - readAsArrayBuffer
+    - readAsBinaryString
+    - readAsDataURL
+    - readAsText
+
+javascriptBOMBlobMethod:
+    - append
+    - getBlob
+    - getFile
+
+javascriptBOMURLMethod:
+    - createObjectURL
+    - revokeObjectURL

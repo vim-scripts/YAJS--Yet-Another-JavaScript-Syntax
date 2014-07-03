@@ -1,0 +1,11 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=4974
+
+Yet Another JavaScript Syntax file for Vim. Key differences:
+
+ *  Use 'javascript' as group name's prefix, not 'javaScript' or 'JavaScript'. Works great with SyntaxComplete.
+ *  Recognize Web API and DOM keywords. Keep increase.
+ *  Works perfect with javascript-libraries-syntax.vim
+ *  Remove old, unused syntax definitions.
+ *  Support several ES6 new syntax, ex: arrow function =>.
+
+GitHub repo: https://github.com/othree/yajs.vim
