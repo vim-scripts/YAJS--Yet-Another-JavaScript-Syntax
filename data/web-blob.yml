@@ -1,14 +1,52 @@
-javascriptBOMFileMethod:
+javascriptGlobal:
+    - Blob
+    - BlobBuilder
+    - File
+    - FileReader
+    - FileReaderSync
+    - URL
+    - URLUtils
+
+javascriptFileMethod:
     - readAsArrayBuffer
     - readAsBinaryString
     - readAsDataURL
     - readAsText
 
-javascriptBOMBlobMethod:
+javascriptFileReaderProp:
+    - error
+    - readyState
+    - result
+
+javascriptFileReaderMethod:
+    - abort
+    - readAsArrayBuffer
+    - readAsBinaryString
+    - readAsDataURL
+    - readAsText
+
+javascriptFileListMethod:
+    - item
+
+javascriptBlobMethod:
     - append
     - getBlob
     - getFile
 
-javascriptBOMURLMethod:
+javascriptURLUtilsProp:
+    - hash
+    - host
+    - hostname
+    - href
+    - origin
+    - password
+    - pathname
+    - port
+    - protocol
+    - search
+    - searchParams
+    - username
+
+javascriptURLStaticMethod:
     - createObjectURL
     - revokeObjectURL

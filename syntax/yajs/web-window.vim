@@ -1,26 +1,26 @@
-syntax keyword javascriptBOMWindowProp applicationCache closed Components console
-syntax keyword javascriptBOMWindowProp controllers crypto dialogArguments document
-syntax keyword javascriptBOMWindowProp frameElement frames fullScreen history innerHeight
-syntax keyword javascriptBOMWindowProp innerWidth length location locationbar localStorage
-syntax keyword javascriptBOMWindowProp menubar messageManager name navigator opener
-syntax keyword javascriptBOMWindowProp outerHeight outerWidth pageXOffset pageYOffset
-syntax keyword javascriptBOMWindowProp parent performance personalbar returnValue
-syntax keyword javascriptBOMWindowProp screen screenX screenY scrollbars scrollMaxX
-syntax keyword javascriptBOMWindowProp scrollMaxY scrollX scrollY self sessionStorage
-syntax keyword javascriptBOMWindowProp sidebar status statusbar toolbar top window
+syntax keyword javascriptBOMWindowProp applicationCache closed Components controllers
+syntax keyword javascriptBOMWindowProp crypto dialogArguments document frameElement
+syntax keyword javascriptBOMWindowProp frames fullScreen history innerHeight innerWidth
+syntax keyword javascriptBOMWindowProp length location locationbar localStorage menubar
+syntax keyword javascriptBOMWindowProp messageManager name navigator opener outerHeight
+syntax keyword javascriptBOMWindowProp outerWidth pageXOffset pageYOffset parent performance
+syntax keyword javascriptBOMWindowProp personalbar returnValue screen screenX screenY
+syntax keyword javascriptBOMWindowProp scrollbars scrollMaxX scrollMaxY scrollX scrollY
+syntax keyword javascriptBOMWindowProp self sessionStorage sidebar status statusbar
+syntax keyword javascriptBOMWindowProp toolbar top window
 syntax cluster props add=javascriptBOMWindowProp
 if exists("did_javascript_hilink") | HiLink javascriptBOMWindowProp Structure
 endif
-syntax keyword javascriptBOMWindowMethod alert atob blur btoa clearImmediate clearInterval nextgroup=javascriptFuncArg
-syntax keyword javascriptBOMWindowMethod clearTimeout close confirm dispatchEvent nextgroup=javascriptFuncArg
-syntax keyword javascriptBOMWindowMethod dump find focus getAttention getAttentionWithCycleCount nextgroup=javascriptFuncArg
-syntax keyword javascriptBOMWindowMethod getComputedStyle getDefaulComputedStyle getSelection nextgroup=javascriptFuncArg
-syntax keyword javascriptBOMWindowMethod matchMedia maximize moveBy moveTo open openDialog nextgroup=javascriptFuncArg
-syntax keyword javascriptBOMWindowMethod postMessage print prompt removeEventListener nextgroup=javascriptFuncArg
-syntax keyword javascriptBOMWindowMethod resizeBy resizeTo restore scroll scrollBy nextgroup=javascriptFuncArg
-syntax keyword javascriptBOMWindowMethod scrollByLines scrollByPages scrollTo setCursor nextgroup=javascriptFuncArg
-syntax keyword javascriptBOMWindowMethod setImmediate setInterval setResizable setTimeout nextgroup=javascriptFuncArg
-syntax keyword javascriptBOMWindowMethod showModalDialog sizeToContent stop updateCommands nextgroup=javascriptFuncArg
+syntax keyword javascriptBOMWindowMethod alert atob blur btoa clearImmediate clearInterval nextgroup=javascriptFuncCallArg
+syntax keyword javascriptBOMWindowMethod clearTimeout close confirm dispatchEvent nextgroup=javascriptFuncCallArg
+syntax keyword javascriptBOMWindowMethod find focus getAttention getAttentionWithCycleCount nextgroup=javascriptFuncCallArg
+syntax keyword javascriptBOMWindowMethod getComputedStyle getDefaulComputedStyle getSelection nextgroup=javascriptFuncCallArg
+syntax keyword javascriptBOMWindowMethod matchMedia maximize moveBy moveTo open openDialog nextgroup=javascriptFuncCallArg
+syntax keyword javascriptBOMWindowMethod postMessage print prompt removeEventListener nextgroup=javascriptFuncCallArg
+syntax keyword javascriptBOMWindowMethod resizeBy resizeTo restore scroll scrollBy nextgroup=javascriptFuncCallArg
+syntax keyword javascriptBOMWindowMethod scrollByLines scrollByPages scrollTo setCursor nextgroup=javascriptFuncCallArg
+syntax keyword javascriptBOMWindowMethod setImmediate setInterval setResizable setTimeout nextgroup=javascriptFuncCallArg
+syntax keyword javascriptBOMWindowMethod showModalDialog sizeToContent stop updateCommands nextgroup=javascriptFuncCallArg
 syntax cluster props add=javascriptBOMWindowMethod
 if exists("did_javascript_hilink") | HiLink javascriptBOMWindowMethod Structure
 endif
@@ -35,7 +35,7 @@ syntax keyword javascriptBOMWindowEvent contained onmozbeforepaint onpaint onpop
 syntax keyword javascriptBOMWindowEvent contained onreset onresize onscroll onselect
 syntax keyword javascriptBOMWindowEvent contained onsubmit onunload onuserproximity
 syntax keyword javascriptBOMWindowEvent contained onpageshow onpagehide
-if exists("did_javascript_hilink") | HiLink javascriptBOMWindowEvent Type
+if exists("did_javascript_hilink") | HiLink javascriptBOMWindowEvent Keyword
 endif
 syntax keyword javascriptBOMWindowCons DOMParser QueryInterface XMLSerializer
 if exists("did_javascript_hilink") | HiLink javascriptBOMWindowCons Structure

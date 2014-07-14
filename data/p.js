@@ -18,14 +18,37 @@ try {
   var def = '';
   var contained = true;
   var contains = false;
-
+  var hilink = true;
+  var statics = [];
 
   yml = yaml.safeLoad(fs.readFileSync(file + '.yml', 'utf8'));
 
+  var globals = {};
+  for (group in yml) {
+    if (/Global/.test(group) || /Cons/.test(group) || /BOMWindow(Prop|Method)/.test(group) || /BOM$/.test(group)) {
+      rules = yml[group];
+      for (i in rules) {
+        rule = rules[i];
+        globals[rule] = [];
+      }
+    } else {
+      if (/Static/.test(group)) {
+        for (i in rules) {
+          rule = rules[i];
+          if (group.toLowerCase().indexOf(rule.toLowerCase()) >= 0) {
+            globals[rule].push(group);
+            break;
+          }
+        }
+      }
+    }
+  }
   for (group in yml) {
     contained = true;
     contains = false;
-    if (/Global/.test(group) || /Cons/.test(group) || /BOMWindow(Prop|Method)/.test(group) || /BOM$/.test(group)) {
+    statics = [];
+
+    if (/Global|Cons/.test(group) || /BOMWindow(Prop|Method)/.test(group) || /BOM$/.test(group)) {
         contained = false;
     }
     
@@ -40,40 +63,55 @@ try {
 
     while(rule) {
       // if (!isUpper(rule.substr(0,1))) {
-      if (/Style/.test(group)) {
-        rule = camel(rule);
-      }
-      if (rule !== 'contains') {
-        def = def + ' ' + rule;
+      statics = globals[rule];
+      if (statics && typeof statics !== 'function' && statics.length) {
+        console.log(predef + ' ' + rule + ' nextgroup=' + group + rule + 'Dot');
+        console.log('syntax match   ' + group + rule + 'Dot /\\./ contained nextgroup=' + statics.join(','));
       } else {
-        contains = true;
-      }
-      if (def.length > 80) {
-        if (/Method/.test(group)) {
-          def = def + ' nextgroup=javascriptFuncArg'
+        if (/Style/.test(group)) {
+          rule = camel(rule);
         }
-        console.log(def);
-        def = predef;
+        if (rule !== 'contains') {
+          def = def + ' ' + rule;
+        } else {
+          contains = true;
+        }
+        if (def.length > 80) {
+          if (/Method/.test(group)) {
+            def = def + ' nextgroup=javascriptFuncCallArg';
+          }
+          console.log(def);
+          def = predef;
+        }
       }
       rule = rules.shift();
     }
     if (def.length > predef.length) {
+      if (/Method/.test(group)) {
+        def = def + ' nextgroup=javascriptFuncCallArg';
+      }
       console.log(def);
     }
 
     if (contains) {
       console.log('syntax match ' + group + ' contained /contains/');
     }
-    if (/Prop|Method/.test(group)) {
+    if (/Prop|Method/.test(group) && !/Static/.test(group)) {
       console.log('syntax cluster props add=' + group);
     }
 
-    if (contained) {
-      console.log('if exists("did_javascript_hilink") | HiLink ' + group + ' Type');
-    } else {
-      console.log('if exists("did_javascript_hilink") | HiLink ' + group + ' Structure');
+    hilink = true;
+    if (group === 'javascriptGlobal' && file !== 'javascript') {
+        hilink = false;
     }
-    console.log('endif');
+    if (hilink) {
+      if (contained) {
+        console.log('if exists("did_javascript_hilink") | HiLink ' + group + ' Keyword');
+      } else {
+        console.log('if exists("did_javascript_hilink") | HiLink ' + group + ' Structure');
+      }
+      console.log('endif');
+    }
   }
 
 } catch (e) {
