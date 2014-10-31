@@ -78,7 +78,11 @@ try {
         }
         if (def.length > 80) {
           if (/Method/.test(group)) {
-            def = def + ' nextgroup=javascriptFuncCallArg';
+            if (/Event/.test(group)) {
+              def = def + ' nextgroup=javascriptEventFuncCallArg';
+            } else {
+              def = def + ' nextgroup=javascriptFuncCallArg';
+            }
           }
           console.log(def);
           def = predef;
@@ -88,7 +92,11 @@ try {
     }
     if (def.length > predef.length) {
       if (/Method/.test(group)) {
-        def = def + ' nextgroup=javascriptFuncCallArg';
+        if (/Event/.test(group)) {
+          def = def + ' nextgroup=javascriptEventFuncCallArg';
+        } else {
+          def = def + ' nextgroup=javascriptFuncCallArg';
+        }
       }
       console.log(def);
     }
@@ -99,13 +107,18 @@ try {
     if (/Prop|Method/.test(group) && !/Static/.test(group)) {
       console.log('syntax cluster props add=' + group);
     }
+    if (file === 'event') {
+      console.log('syntax cluster events add=' + group);
+    }
 
     hilink = true;
     if (group === 'javascriptGlobal' && file !== 'javascript') {
         hilink = false;
     }
     if (hilink) {
-      if (contained) {
+      if (file === 'event') {
+        console.log('if exists("did_javascript_hilink") | HiLink ' + group + ' Title');
+      } else if (contained) {
         console.log('if exists("did_javascript_hilink") | HiLink ' + group + ' Keyword');
       } else {
         console.log('if exists("did_javascript_hilink") | HiLink ' + group + ' Structure');

@@ -15,6 +15,7 @@ files='
   es6-set
   es6-proxy
   es6-promise
+  ecma-402
   node
   web
   web-console
@@ -28,6 +29,8 @@ files='
   dom-elem
   dom-event
   dom-document
+  dom-storage
+  event
   css'
 
 for file in $files; do

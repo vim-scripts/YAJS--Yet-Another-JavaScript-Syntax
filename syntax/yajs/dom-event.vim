@@ -1,5 +1,5 @@
-syntax keyword javascriptDOMEventTargetMethod contained addEventListener removeEventListener nextgroup=javascriptFuncCallArg
-syntax keyword javascriptDOMEventTargetMethod contained dispatchEvent nextgroup=javascriptFuncCallArg
+syntax keyword javascriptDOMEventTargetMethod contained addEventListener removeEventListener nextgroup=javascriptEventFuncCallArg
+syntax keyword javascriptDOMEventTargetMethod contained dispatchEvent nextgroup=javascriptEventFuncCallArg
 syntax cluster props add=javascriptDOMEventTargetMethod
 if exists("did_javascript_hilink") | HiLink javascriptDOMEventTargetMethod Keyword
 endif
@@ -24,8 +24,8 @@ syntax keyword javascriptDOMEventProp contained eventPhase target timeStamp type
 syntax cluster props add=javascriptDOMEventProp
 if exists("did_javascript_hilink") | HiLink javascriptDOMEventProp Keyword
 endif
-syntax keyword javascriptDOMEventMethod contained initEvent preventDefault stopImmediatePropagation nextgroup=javascriptFuncCallArg
-syntax keyword javascriptDOMEventMethod contained stopPropagation nextgroup=javascriptFuncCallArg
+syntax keyword javascriptDOMEventMethod contained initEvent preventDefault stopImmediatePropagation nextgroup=javascriptEventFuncCallArg
+syntax keyword javascriptDOMEventMethod contained stopPropagation nextgroup=javascriptEventFuncCallArg
 syntax cluster props add=javascriptDOMEventMethod
 if exists("did_javascript_hilink") | HiLink javascriptDOMEventMethod Keyword
 endif
