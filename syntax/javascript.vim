@@ -1,13 +1,20 @@
 " Vim syntax file
 " Language:     JavaScript
 " Maintainer:   Kao Wei-Ko(othree) <othree@gmail.com>
-" Last Change:  2014-10-31
+" Last Change:  2014-11-26
 " Version:      1.1
 " Changes:      Go to https://github.com/othree/yajs for recent changes.
 " Origin:       https://github.com/jelera/vim-javascript-syntax
 " Credits:      Jose Elera Campana, Zhao Yi, Claudio Fleiner, Scott Shattuck 
 "               (This file is based on their hard work), gumnos (From the #vim 
 "               IRC Channel in Freenode)
+
+
+if exists("b:yajs_loaded")
+  finish
+else
+  let b:yajs_loaded = 1
+endif
 
 if !exists("main_syntax")
   if version < 600
@@ -95,7 +102,6 @@ syntax region  javascriptDocLinkTag            contained matchgroup=javascriptDo
 if main_syntax == "javascript"
   syntax sync clear
   syntax sync ccomment javascriptComment minlines=200
-  " syntax sync match javascriptHighlight grouphere javascriptBlock /{/
 endif
 
 syntax case match
@@ -152,41 +158,43 @@ syntax match   javascriptProp                  contained /[a-zA-Z_$][a-zA-Z0-9_$
 syntax match   javascriptDotNotation           /\./ nextgroup=javascriptProp
 syntax match   javascriptDotStyleNotation      /\.style\./ nextgroup=javascriptDOMStyle transparent
 
-runtime! syntax/yajs/javascript.vim
-runtime! syntax/yajs/es6-number.vim
-runtime! syntax/yajs/es6-string.vim
-runtime! syntax/yajs/es6-array.vim
-runtime! syntax/yajs/es6-object.vim
-runtime! syntax/yajs/es6-symbol.vim
-runtime! syntax/yajs/es6-function.vim
-runtime! syntax/yajs/es6-math.vim
-runtime! syntax/yajs/es6-date.vim
-runtime! syntax/yajs/es6-json.vim
-runtime! syntax/yajs/es6-regexp.vim
-runtime! syntax/yajs/es6-map.vim
-runtime! syntax/yajs/es6-set.vim
-runtime! syntax/yajs/es6-proxy.vim
-runtime! syntax/yajs/es6-promise.vim
-runtime! syntax/yajs/ecma-402.vim
-runtime! syntax/yajs/node.vim
-runtime! syntax/yajs/web.vim
-runtime! syntax/yajs/web-window.vim
-runtime! syntax/yajs/web-navigator.vim
-runtime! syntax/yajs/web-location.vim
-runtime! syntax/yajs/web-history.vim
-runtime! syntax/yajs/web-console.vim
-runtime! syntax/yajs/web-xhr.vim
-runtime! syntax/yajs/web-blob.vim
-runtime! syntax/yajs/dom-node.vim
-runtime! syntax/yajs/dom-elem.vim
-runtime! syntax/yajs/dom-document.vim
-runtime! syntax/yajs/dom-event.vim
-runtime! syntax/yajs/dom-storage.vim
-runtime! syntax/yajs/css.vim
+runtime syntax/yajs/javascript.vim
+runtime syntax/yajs/es6-number.vim
+runtime syntax/yajs/es6-string.vim
+runtime syntax/yajs/es6-array.vim
+runtime syntax/yajs/es6-object.vim
+runtime syntax/yajs/es6-symbol.vim
+runtime syntax/yajs/es6-function.vim
+runtime syntax/yajs/es6-math.vim
+runtime syntax/yajs/es6-date.vim
+runtime syntax/yajs/es6-json.vim
+runtime syntax/yajs/es6-regexp.vim
+runtime syntax/yajs/es6-map.vim
+runtime syntax/yajs/es6-set.vim
+runtime syntax/yajs/es6-proxy.vim
+runtime syntax/yajs/es6-promise.vim
+runtime syntax/yajs/ecma-402.vim
+runtime syntax/yajs/node.vim
+runtime syntax/yajs/web.vim
+runtime syntax/yajs/web-window.vim
+runtime syntax/yajs/web-navigator.vim
+runtime syntax/yajs/web-location.vim
+runtime syntax/yajs/web-history.vim
+runtime syntax/yajs/web-console.vim
+runtime syntax/yajs/web-xhr.vim
+runtime syntax/yajs/web-blob.vim
+runtime syntax/yajs/web-crypto.vim
+runtime syntax/yajs/web-fetch.vim
+runtime syntax/yajs/dom-node.vim
+runtime syntax/yajs/dom-elem.vim
+runtime syntax/yajs/dom-document.vim
+runtime syntax/yajs/dom-event.vim
+runtime syntax/yajs/dom-storage.vim
+runtime syntax/yajs/css.vim
 
 let javascript_props = 1
 
-runtime! syntax/yajs/event.vim
+runtime syntax/yajs/event.vim
 syntax region  javascriptEventString           contained start=/"/  skip=/\\\\\|\\"\|\\\n/  end=/"\|$/ contains=javascriptASCII,@events
 syntax region  javascriptEventString           contained start=/'/  skip=/\\\\\|\\'\|\\\n/  end=/'\|$/ contains=javascriptASCII,@events
 
@@ -195,7 +203,11 @@ syntax region  javascriptImportDef             start=/import/ end=/;\|$/ contain
 syntax keyword javascriptImport                contained from as import
 syntax keyword javascriptExport                export module
 
-syntax region  javascriptBlock                 matchgroup=javascriptBraces start=/\([\^:]\s\*\)\=\zs{/ end=/}/ contains=TOP
+if main_syntax == 'html' || main_syntax == 'eruby' || main_syntax == 'php' || main_syntax == 'haml'
+  syntax region  javascriptBlock                 matchgroup=javascriptBraces start=/\([\^:]\s\*\)\=\zs{/ end=/}/ contains=@htmlJavaScript
+else
+  syntax region  javascriptBlock                 matchgroup=javascriptBraces start=/\([\^:]\s\*\)\=\zs{/ end=/}/ contains=TOP
+endif
 
 syntax region  javascriptMethodDef             contained start=/\(\(\(set\|get\)\s\+\)\?\)\k\+\s\?(/ end=/)/ contains=javascriptMethodAccessor,javascriptMethodName,javascriptFuncArg nextgroup=javascriptBlock skipwhite keepend
 syntax keyword javascriptMethodAccessor        contained get set
@@ -204,7 +216,7 @@ syntax match   javascriptMethodName            contained /\k\+\ze\s\?(/
 syntax keyword javascriptAsyncFuncKeyword      async await
 syntax keyword javascriptFuncKeyword           function nextgroup=javascriptFuncName,javascriptFuncArg skipwhite
 syntax match   javascriptFuncName              contained /\k\+/ nextgroup=javascriptFuncArg skipwhite
-syntax match   javascriptFuncArg               contained /([^()]*)/ contains=javascriptParens,javascriptFuncComma nextgroup=javascriptBlock skipwhite
+syntax match   javascriptFuncArg               contained /([^()]*)/ contains=javascriptParens,javascriptFuncComma nextgroup=javascriptBlock skipwhite skipempty
 syntax match   javascriptFuncComma             contained /,/
 syntax match   javascriptArrowFunc             /=>/
 
@@ -301,6 +313,8 @@ if exists("did_javascript_hilink")
   HiLink javascriptClassSuper           keyword
 
   HiLink shellbang                      Comment
+
+  highlight link javaScript             NONE
 
   delcommand HiLink
   unlet did_javascript_hilink
