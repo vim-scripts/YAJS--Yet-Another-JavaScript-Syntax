@@ -1,8 +1,8 @@
 " Vim syntax file
 " Language:     JavaScript
 " Maintainer:   Kao Wei-Ko(othree) <othree@gmail.com>
-" Last Change:  2014-11-26
-" Version:      1.1
+" Last Change:  2015-02-17
+" Version:      1.3
 " Changes:      Go to https://github.com/othree/yajs for recent changes.
 " Origin:       https://github.com/jelera/vim-javascript-syntax
 " Credits:      Jose Elera Campana, Zhao Yi, Claudio Fleiner, Scott Shattuck 
@@ -10,12 +10,11 @@
 "               IRC Channel in Freenode)
 
 
-if exists("b:yajs_loaded")
-  finish
-else
-  let b:yajs_loaded = 1
-endif
-
+" if exists("b:yajs_loaded")
+  " finish
+" else
+  " let b:yajs_loaded = 1
+" endif
 if !exists("main_syntax")
   if version < 600
     syntax clear
@@ -41,25 +40,28 @@ else
 endif
 
 "Dollar sign is permitted anywhere in an identifier
-if &filetype == 'javascript'
+setlocal iskeyword-=$
+if main_syntax == 'javascript'
   setlocal iskeyword+=$
+  syntax cluster htmlJavaScript                 contains=TOP
 endif
 
 syntax sync fromstart
 
 "Syntax coloring for Node.js shebang line
-syntax match   shellbang "^#!.*/bin/env\s\+node\>"
+syntax match   shellbang "^#!.*node\>"
+syntax match   shellbang "^#!.*iojs\>"
 
 
 "JavaScript comments
 syntax keyword javascriptCommentTodo           contained TODO FIXME XXX TBD
 syntax match   javascriptLineComment           "//.*" contains=@Spell,javascriptCommentTodo
-syntax region  javascriptComment               start="/\*"  end="\*/" contains=@Spell,javascriptCommentTodo
+syntax region  javascriptComment               start="/\*"  end="\*/" contains=@Spell,javascriptCommentTodo extend
 
 "JSDoc
 syntax case ignore
 
-syntax region  javascriptDocComment            matchgroup=javascriptComment start="/\*\*"  end="\*/" contains=javascriptDocNotation,javascriptCommentTodo,@Spell fold
+syntax region  javascriptDocComment            matchgroup=javascriptComment start="/\*\*"  end="\*/" contains=javascriptDocNotation,javascriptCommentTodo,@Spell fold keepend
 syntax match   javascriptDocNotation           contained /@/ nextgroup=javascriptDocTags
 
 syntax keyword javascriptDocTags               contained constant constructor constructs function ignore inner private public readonly static
@@ -106,40 +108,58 @@ endif
 
 syntax case match
 
+"Block VariableStatement EmptyStatement ExpressionStatement IfStatement IterationStatement ContinueStatement BreakStatement ReturnStatement WithStatement LabelledStatement SwitchStatement ThrowStatement TryStatement DebuggerStatement
+
+syntax cluster javascriptStatement             contains=javascriptBlock,javascriptVariable,@javascriptExpression,javascriptConditional,javascriptRepeat,javascriptBranch,javascriptLabel,javascriptStatementKeyword,javascriptTry,javascriptDebugger
+
 "Syntax in the JavaScript code
-syntax match   javascriptASCII                 contained /\\\d\d\d/
+" syntax match   javascriptASCII                 contained /\\\d\d\d/
 syntax match   javascriptTemplateSubstitution  contained /\${\w\+}/
-syntax region  javascriptString                start=/"/  skip=/\\\\\|\\"\|\\\n/  end=/"\|$/ contains=javascriptASCII
-syntax region  javascriptString                start=/'/  skip=/\\\\\|\\'\|\\\n/  end=/'\|$/ contains=javascriptASCII
-syntax region  javascriptTemplate              start=/`/  skip=/\\\\\|\\`\|\\\n/  end=/`\|$/ contains=javascriptASCII,javascriptTemplateSubstitution
+syntax region  javascriptString                start=/"/  skip=/\\\\\|\\"\|\\\n/  end=/"\|$/
+syntax region  javascriptString                start=/'/  skip=/\\\\\|\\'\|\\\n/  end=/'\|$/
+syntax region  javascriptTemplate              start=/`/  skip=/\\\\\|\\`\|\n/  end=/`\|$/ contains=javascriptTemplateSubstitution
+" syntax match   javascriptTemplateTag           /\k\+/ nextgroup=javascriptTemplate
 
 syntax match   javascriptNumber                /\<0[bB][01]\+\>/
 syntax match   javascriptNumber                /\<0[oO][0-7]\+\>/
 syntax match   javascriptNumber                /\<0[xX][0-9a-fA-F]\+\>/
-syntax match   javascriptNumber                /\<[+-]\=\%(\d\+\.\d\+\|\d\+\|\.\d\+\)\%([eE][+-]\=\d\+\)\=\>/
-syntax match   javascriptLabel                 /\(?\s*\)\@<!\<\w\+\(\s*:\)\@=/
+syntax match   javascriptNumber                /[+-]\=\%(\d\+\.\d\+\|\d\+\|\.\d\+\)\%([eE][+-]\=\d\+\)\=\>/
 
+syntax cluster javascriptTypes                 contains=javascriptString,javascriptTemplate,javascriptNumber,javascriptBoolean,javascriptNull
+syntax cluster javascriptValue                 contains=@javascriptTypes,@javascriptExpression,javascriptFuncKeyword,javascriptObjectLiteral
+
+syntax match   javascriptLabel                 /\k\+\s*:/he=e-1 nextgroup=@javascriptValue,@javascriptStatement skipwhite
+syntax region  javascriptPropertyName          contained start=/"/  skip=/\\\\\|\\"\|\\\n/  end=/"\s*:/he=e-1 nextgroup=@javascriptValue skipwhite
+syntax region  javascriptPropertyName          contained start=/'/  skip=/\\\\\|\\'\|\\\n/  end=/'\s*:/he=e-1 nextgroup=@javascriptValue skipwhite
+" Value for object, statement for label statement
+
+syntax cluster javascriptStrings               contains=javascriptProp,javascriptString,javascriptComment,javascriptLineComment,javascriptDocComment,javascriptRegexpString,javascriptPropertyName
+syntax cluster javascriptNoReserved            contains=@javascriptStrings,shellbang
 "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#Keywords
-syntax keyword javascriptReserved              containedin=ALLBUT,javascriptProp,javascriptString,javascriptComment,javascriptLineComment,javascriptDocComment break case catch class const continue
-syntax keyword javascriptReserved              containedin=ALLBUT,javascriptProp,javascriptString,javascriptComment,javascriptLineComment,javascriptDocComment debugger default delete do else export
-syntax keyword javascriptReserved              containedin=ALLBUT,javascriptProp,javascriptString,javascriptComment,javascriptLineComment,javascriptDocComment extends finally for function if 
-"import
-syntax keyword javascriptReserved              containedin=ALLBUT,javascriptProp,javascriptString,javascriptComment,javascriptLineComment,javascriptDocComment in instanceof let new return super
-syntax keyword javascriptReserved              containedin=ALLBUT,javascriptProp,javascriptString,javascriptComment,javascriptLineComment,javascriptDocComment switch this throw try typeof var
-syntax keyword javascriptReserved              containedin=ALLBUT,javascriptProp,javascriptString,javascriptComment,javascriptLineComment,javascriptDocComment void while with yield
+syntax keyword javascriptReserved              containedin=ALLBUT,@javascriptNoReserved break case catch class const continue
+syntax keyword javascriptReserved              containedin=ALLBUT,@javascriptNoReserved debugger default delete do else export
+syntax keyword javascriptReserved              containedin=ALLBUT,@javascriptNoReserved extends finally for function if 
+"import,javascriptRegexpString,javascriptPropertyName
+syntax keyword javascriptReserved              containedin=ALLBUT,@javascriptNoReserved in instanceof let new return super
+syntax keyword javascriptReserved              containedin=ALLBUT,@javascriptNoReserved switch throw try typeof var
+syntax keyword javascriptReserved              containedin=ALLBUT,@javascriptNoReserved void while with yield
 
-syntax keyword javascriptReserved              containedin=ALLBUT,javascriptProp,javascriptString,javascriptComment,javascriptLineComment,javascriptDocComment enum implements package protected static
-syntax keyword javascriptReserved              containedin=ALLBUT,javascriptProp,javascriptString,javascriptComment,javascriptLineComment,javascriptDocComment interface private public abstract boolean
-syntax keyword javascriptReserved              containedin=ALLBUT,javascriptProp,javascriptString,javascriptComment,javascriptLineComment,javascriptDocComment byte char double final float goto int
-syntax keyword javascriptReserved              containedin=ALLBUT,javascriptProp,javascriptString,javascriptComment,javascriptLineComment,javascriptDocComment long native short synchronized transient
-syntax keyword javascriptReserved              containedin=ALLBUT,javascriptProp,javascriptString,javascriptComment,javascriptLineComment,javascriptDocComment volatile
+syntax keyword javascriptReserved              containedin=ALLBUT,@javascriptNoReserved enum implements package protected static
+syntax keyword javascriptReserved              containedin=ALLBUT,@javascriptNoReserved interface private public abstract boolean
+syntax keyword javascriptReserved              containedin=ALLBUT,@javascriptNoReserved byte char double final float goto int
+syntax keyword javascriptReserved              containedin=ALLBUT,@javascriptNoReserved long native short synchronized transient
+syntax keyword javascriptReserved              containedin=ALLBUT,@javascriptNoReserved volatile
+
+"this
 
 "JavaScript Prototype
 syntax keyword javascriptPrototype             prototype
 
 "Program Keywords
-syntax keyword javascriptIdentifier            arguments this let var const void
-syntax keyword javascriptOperator              delete new instanceof typeof
+syntax keyword javascriptIdentifier            arguments this let var const
+syntax keyword javascriptVariable              let var const
+syntax keyword javascriptOperator              delete new instanceof typeof void
+syntax keyword javascriptForOperator           in of
 syntax keyword javascriptBoolean               true false
 syntax keyword javascriptNull                  null undefined
 syntax keyword javascriptMessage               alert confirm prompt status
@@ -147,12 +167,15 @@ syntax keyword javascriptGlobal                self top parent
 
 "Statement Keywords
 syntax keyword javascriptConditional           if else switch
-syntax keyword javascriptRepeat                do while for in of
+syntax keyword javascriptConditionalElse       else
+syntax keyword javascriptRepeat                do while for
 syntax keyword javascriptBranch                break continue
-syntax keyword javascriptLabel                 case default
-syntax keyword javascriptStatement             return with yield
+syntax keyword javascriptCase                  case default
+syntax keyword javascriptStatementKeyword      return with yield
 
-syntax keyword javascriptExceptions            try catch throw finally
+syntax keyword javascriptTry                   try
+syntax keyword javascriptExceptions            catch throw finally
+syntax keyword javascriptDebugger              debugger
 
 syntax match   javascriptProp                  contained /[a-zA-Z_$][a-zA-Z0-9_$]*(\?/ contains=@props transparent
 syntax match   javascriptDotNotation           /\./ nextgroup=javascriptProp
@@ -185,6 +208,7 @@ runtime syntax/yajs/web-xhr.vim
 runtime syntax/yajs/web-blob.vim
 runtime syntax/yajs/web-crypto.vim
 runtime syntax/yajs/web-fetch.vim
+runtime syntax/yajs/web-service-worker.vim
 runtime syntax/yajs/dom-node.vim
 runtime syntax/yajs/dom-elem.vim
 runtime syntax/yajs/dom-document.vim
@@ -203,11 +227,7 @@ syntax region  javascriptImportDef             start=/import/ end=/;\|$/ contain
 syntax keyword javascriptImport                contained from as import
 syntax keyword javascriptExport                export module
 
-if main_syntax == 'html' || main_syntax == 'eruby' || main_syntax == 'php' || main_syntax == 'haml'
-  syntax region  javascriptBlock                 matchgroup=javascriptBraces start=/\([\^:]\s\*\)\=\zs{/ end=/}/ contains=@htmlJavaScript
-else
-  syntax region  javascriptBlock                 matchgroup=javascriptBraces start=/\([\^:]\s\*\)\=\zs{/ end=/}/ contains=TOP
-endif
+syntax region  javascriptBlock                 matchgroup=javascriptBraces start=/\([\^:]\s\*\)\=\zs{/ end=/}/ contains=@htmlJavaScript
 
 syntax region  javascriptMethodDef             contained start=/\(\(\(set\|get\)\s\+\)\?\)\k\+\s\?(/ end=/)/ contains=javascriptMethodAccessor,javascriptMethodName,javascriptFuncArg nextgroup=javascriptBlock skipwhite keepend
 syntax keyword javascriptMethodAccessor        contained get set
@@ -216,7 +236,7 @@ syntax match   javascriptMethodName            contained /\k\+\ze\s\?(/
 syntax keyword javascriptAsyncFuncKeyword      async await
 syntax keyword javascriptFuncKeyword           function nextgroup=javascriptFuncName,javascriptFuncArg skipwhite
 syntax match   javascriptFuncName              contained /\k\+/ nextgroup=javascriptFuncArg skipwhite
-syntax match   javascriptFuncArg               contained /([^()]*)/ contains=javascriptParens,javascriptFuncComma nextgroup=javascriptBlock skipwhite skipempty
+syntax match   javascriptFuncArg               contained /([^()]*)/ contains=javascriptParens,javascriptFuncKeyword,javascriptFuncComma nextgroup=javascriptBlock skipwhite skipempty
 syntax match   javascriptFuncComma             contained /,/
 syntax match   javascriptArrowFunc             /=>/
 
@@ -229,24 +249,25 @@ syntax region  javascriptClassBLock            contained matchgroup=javascriptBr
 syntax keyword javascriptClassStatic           contained static nextgroup=javascriptMethodDef skipwhite
 
 
-syntax region  javascriptObjectLiteral         contained matchgroup=javascriptBraces start=/{/ end=/}/ contains=javascriptLabel,javascriptMethodDef,@javascriptExpression
+syntax region  javascriptObjectLiteral         contained matchgroup=javascriptBraces start=/{/ end=/}/ contains=javascriptComment,javascriptLabel,javascriptPropertyName,javascriptMethodDef extend
 
-syntax match   javascriptBraces                contained /[{}\[\]]/
+syntax match   javascriptBraces                /[\[\]]/
 syntax match   javascriptParens                /[()]/
-syntax match   javascriptOpSymbols             /\_[^+\-*/%\^=!<>&|?]\@<=\(<\|>\|<=\|>=\|==\|!=\|===\|!==\|+\|-\|*\|%\|++\|--\|<<\|>>\|>>>\|&\||\|^\|!\|\~\|&&\|||\|?\|=\|+=\|-=\|*=\|%=\|<<=\|>>=\|>>>=\|&=\||=\|^=\|\/\|\/=\)\ze\_[^+\-*/%\^=!<>&|?]/ nextgroup=@javascriptExpression skipwhite
+" syntax match   javascriptOpSymbols             /[^+\-*/%\^=!<>&|?]\@<=\(<\|>\|<=\|>=\|==\|!=\|===\|!==\|+\|-\|*\|%\|++\|--\|<<\|>>\|>>>\|&\||\|^\|!\|\~\|&&\|||\|?\|=\|+=\|-=\|*=\|%=\|<<=\|>>=\|>>>=\|&=\||=\|^=\|\/\|\/=\)\ze\_[^+\-*/%\^=!<>&|?]/ nextgroup=@javascriptExpression skipwhite
+syntax match   javascriptOpSymbols             /[^+\-*/%\^=!<>&|?]\@<=\(<\|>\|<=\|>=\|==\|!=\|===\|!==\|+\|*\|%\|++\|--\|<<\|>>\|>>>\|&\||\|^\|!\|\~\|&&\|||\|?\|=\|+=\|-=\|*=\|%=\|<<=\|>>=\|>>>=\|&=\||=\|^=\|\/\|\/=\)\ze\_[^+\-*/%\^=!<>&|?]/ nextgroup=@javascriptExpression skipwhite
 syntax match   javascriptEndColons             /[;,]/
-syntax match   javascriptLogicSymbols          /\_[^&|]\@<=\(&&\|||\)\ze\_[^&|]/
+syntax match   javascriptLogicSymbols          /[^&|]\@<=\(&&\|||\)\ze\_[^&|]/
 
-syntax region  javascriptRegexpString          start="/[^/*]"me=e-1 skip="\\\\\|\\/" end="/[gimy]\{0,2\}" oneline
+syntax region  javascriptRegexpString          start="\(^\|=\|(\|{\|;\)\@<=\s*/[^/*]"me=e-1 skip="\\\\\|\\/" end="/[gimy]\{0,2\}" oneline
 
-syntax keyword javascriptComprehension         for of if
-syntax cluster javascriptTypes                 contains=javascriptString,javascriptTemplate,javascriptNumber,javascriptBoolean,javascriptNull
+syntax keyword javascriptComprehension         for of
 syntax cluster javascriptEventTypes            contains=javascriptEventString,javascriptTemplate,javascriptNumber,javascriptBoolean,javascriptNull
-syntax cluster javascriptOps                   contains=javascriptOpSymbols,javascriptLogicSymbols
+syntax cluster javascriptOps                   contains=javascriptOpSymbols,javascriptLogicSymbols,javascriptOperator
 syntax region  javascriptParenExp              contained matchgroup=javascriptParens start=/(/ end=/)/ contains=@javascriptExpression,javascriptComprehension
-syntax cluster javascriptExpression            contains=javascriptParenExp,javascriptObjectLiteral,javascriptFuncKeyword,javascriptRegexpString,@javascriptTypes,@javascriptOps
-syntax cluster javascriptEventExpression       contains=javascriptParenExp,javascriptObjectLiteral,javascriptFuncKeyword,javascriptRegexpString,@javascriptEventTypes,@javascriptOps
+syntax cluster javascriptExpression            contains=javascriptParenExp,javascriptObjectLiteral,javascriptFuncKeyword,javascriptFuncCall,javascriptRegexpString,@javascriptTypes,@javascriptOps
+syntax cluster javascriptEventExpression       contains=javascriptParenExp,javascriptObjectLiteral,javascriptFuncKeyword,javascriptFuncCall,javascriptRegexpString,@javascriptEventTypes,@javascriptOps
 
+syntax match   javascriptFuncCall              contained /[a-zA-Z]\k\+/ nextgroup=javascriptFuncCallArg skipwhite
 syntax region  javascriptFuncCallArg           contained matchgroup=javascriptParens start=/(/rs=e end=/)/re=s contains=@javascriptExpression
 syntax region  javascriptEventFuncCallArg      contained matchgroup=javascriptParens start=/(/rs=e end=/)/re=s contains=@javascriptEventExpression
 
@@ -280,11 +301,15 @@ if exists("did_javascript_hilink")
   HiLink javascriptCharacter            Character
   HiLink javascriptPrototype            Type
   HiLink javascriptConditional          Conditional
+  HiLink javascriptConditionalElse      Conditional
+  HiLink javascriptCase                 Conditional
   HiLink javascriptBranch               Conditional
   HiLink javascriptIdentifier           Identifier
+  HiLink javascriptVariable             Identifier
   HiLink javascriptRepeat               Repeat
   HiLink javascriptComprehension        Repeat
-  HiLink javascriptStatement            Statement
+  HiLink javascriptForOperator          Repeat
+  HiLink javascriptStatementKeyword     Statement
   HiLink javascriptMessage              Keyword
   HiLink javascriptOperator             Operator
   " HiLink javascriptType                 Type
@@ -292,8 +317,10 @@ if exists("did_javascript_hilink")
   HiLink javascriptNumber               Number
   HiLink javascriptBoolean              Boolean
   HiLink javascriptLabel                Label
+  HiLink javascriptPropertyName         Label
   HiLink javascriptImport               Special
   HiLink javascriptExport               Special
+  HiLink javascriptTry                  Special
   HiLink javascriptExceptions           Special
 
   HiLink javascriptMethodName           Function
