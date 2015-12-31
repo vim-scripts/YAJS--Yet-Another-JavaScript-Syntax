@@ -25,7 +25,7 @@ try {
 
   var globals = {};
   for (group in yml) {
-    if (/Global/.test(group) || /Cons/.test(group) || /BOMWindow(Prop|Method)/.test(group) || /BOM$/.test(group)) {
+    if (/Global/.test(group) || /Cons$/.test(group) || /BOMWindow(Prop|Method)/.test(group) || /BOM$/.test(group)) {
       rules = yml[group];
       for (i in rules) {
         rule = rules[i];
@@ -48,7 +48,7 @@ try {
     contains = false;
     statics = [];
 
-    if (/Global|Cons/.test(group) || /BOMWindow(Prop|Method)/.test(group) || /BOM$/.test(group)) {
+    if (/Global|Cons$/.test(group) || /BOMWindow(Prop|Method)/.test(group) || /BOM$/.test(group)) {
         contained = false;
     }
     
